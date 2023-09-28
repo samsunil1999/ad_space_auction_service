@@ -34,9 +34,9 @@ func mapUrl() {
 	router.DELETE("/bidders/{id}") // delete bidder
 
 	// auction endpoints
-	router.GET("/auctions", auctions.GetAllLiveAuctions) // list all live auctions
-	router.GET("/auctions/adspaces/{id}")                // Retrieve details of a specific auction, including the winning bid if the auction has ended & active bids if the auction is live
-	router.POST("/auctions/adspaces/{id}/bid")           // Allow bidders to submit bids for an ongoing auction.
+	router.GET("/auctions/list-all", auctions.GetAllLiveAuctions)        // list all live auctions
+	router.GET("/auctions/adspaces/:id", auctions.GetAuctionByAdspaceId) // Retrieve details of a specific auction, including the winning bid if the auction has ended & active bids if the auction is live
+	router.POST("/auctions/adspaces/{id}/bid")                           // Allow bidders to submit bids for an ongoing auction.
 }
 
 func main() {
