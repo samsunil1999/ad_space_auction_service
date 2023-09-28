@@ -45,8 +45,19 @@ func (b BidderImplementations) GetBidderById(id string) (entities.Bidders, error
 	return bidder, err
 }
 
-func (b BidderImplementations) UpdateBidderDetails(req models.BidderReq) (entities.Bidders, error) {
-	return entities.Bidders{}, nil
+func (b BidderImplementations) UpdateBidderDetails(id string, req models.BidderReq) (entities.Bidders, error) {
+	values := make(map[string]interface{})
+	if req.Email != "" {
+		values["email"] = req.Email
+	}
+	if req.Name != "" {
+		values["name"] = req.Name
+	}
+	if req.PhoneNumber != "" {
+		values["phone_number"] = req.PhoneNumber
+	}
+
+	return repositories.BidderRepo.UpdateWithCondition(id, values)
 }
 
 func (b BidderImplementations) DeleteBidder(id string) (models.DeleteBidderResp, error) {

@@ -9,6 +9,6 @@ type BidderInterface interface {
 	RegisterBidder(req models.BidderReq) (entities.Bidders, error)
 	GetAllBidders() (models.ListAllBiddersResp, error)
 	GetBidderById(id string) (entities.Bidders, error)
-	UpdateBidderDetails(req models.BidderReq) (entities.Bidders, error)
+	UpdateBidderDetails(id string, req models.BidderReq) (entities.Bidders, error)
 	DeleteBidder(id string) (models.DeleteBidderResp, error)
 }

@@ -47,3 +47,38 @@ func ValidateBidderId(c *gin.Context) (string, error) {
 
 	return id, nil
 }
+
+func ValidateUpdateBidderReq(c *gin.Context) (req models.BidderReq, id string, err error) {
+	id, err = ValidateBidderId(c)
+	if err != nil {
+		return models.BidderReq{}, "", err
+	}
+
+	err = c.ShouldBindJSON(&req)
+	if err != nil {
+		return models.BidderReq{}, "", err
+	}
+
+	opts := govalidator.Options{
+		Data:  &req,
+		Rules: getRulesForUpdateBidderReq(),
+	}
+
+	v := govalidator.New(opts)
+	e := v.ValidateStruct()
+	if len(e) > 0 {
+		for param, message := range e {
+			return req, "", errors.New("param: " + param + ", message:" + message[0])
+		}
+	}
+
+	return req, id, nil
+}
+
+func getRulesForUpdateBidderReq() govalidator.MapData {
+	rules := govalidator.MapData{
+		"email": []string{"email"},
+		"phone": []string{"digits:10"},
+	}
+	return rules
+}
