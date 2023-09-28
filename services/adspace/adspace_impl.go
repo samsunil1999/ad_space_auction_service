@@ -5,6 +5,7 @@ import (
 	"PERSONAL/ad_space_auction_service/models"
 	"PERSONAL/ad_space_auction_service/models/entities"
 	"PERSONAL/ad_space_auction_service/providers/repositories"
+	"errors"
 	"log"
 
 	"fmt"
@@ -78,6 +79,15 @@ func (a AdspaceImplementations) GetAdspaceById(id string) (entities.AdSpaces, er
 }
 
 func (a AdspaceImplementations) UpdateAdspaceById(id string, req models.AdspaceReq) (entities.AdSpaces, error) {
+	bids, err := repositories.BidRepo.GetAllByAdspaceId(id)
+	if err != nil {
+		return entities.AdSpaces{}, err
+	}
+
+	if len(bids) > 0 && req.BasePrice != 0.0 {
+		return entities.AdSpaces{}, errors.New("Cannot update base_price with active bids")
+	}
+
 	values := make(map[string]interface{})
 	if req.Name != "" {
 		values["name"] = req.Name
@@ -87,14 +97,6 @@ func (a AdspaceImplementations) UpdateAdspaceById(id string, req models.AdspaceR
 	}
 	if req.Description != "" {
 		values["description"] = req.Description
-	}
-	if req.AuctionEndTime != "" {
-		t, _ := time.Parse(constants.Time_Format_DD_MM_YYYY_WITH_COLON_HH_MM_SS, req.AuctionEndTime)
-		values["auction_end_time"] = t
-	}
-	if req.ExpiredAt != "" {
-		t, _ := time.Parse(constants.Time_Format_DD_MM_YYYY_WITH_COLON_HH_MM_SS, req.ExpiredAt)
-		values["expired_at"] = t
 	}
 
 	return repositories.AdspaceRepo.UpdateWithCondition(id, values)
