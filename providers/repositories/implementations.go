@@ -9,5 +9,5 @@ import (
 var (
 	AdspaceRepo adspace.AdspaceRepoInterface = adspace.AdspaceRepoImpl{}
 	BidRepo     bid.BidRepoInterface         = bid.BidRepoImpl{}
-	BidderRepo  bidder.BidRepoInterface      = bidder.BidderRepoImpl{}
+	BidderRepo  bidder.BidderRepoInterface   = bidder.BidderRepoImpl{}
 )

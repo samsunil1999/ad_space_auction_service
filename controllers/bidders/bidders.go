@@ -52,3 +52,16 @@ func GetBidderById(ctx *gin.Context) {
 
 	controllers.ReturnJsonStruct(ctx, http.StatusOK, resp)
 }
+
+func GetAllBidders(ctx *gin.Context) {
+	resp, err := providers.BidderSvc.GetAllBidders()
+	if err != nil {
+		controllers.ReturnJsonStruct(ctx, http.StatusInternalServerError, &controllers.ErrorResp{
+			Code:    2,
+			Message: "Something went wrong, " + err.Error(),
+		})
+		return
+	}
+
+	controllers.ReturnJsonStruct(ctx, http.StatusOK, resp)
+}

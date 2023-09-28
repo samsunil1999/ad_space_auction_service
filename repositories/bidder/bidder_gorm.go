@@ -20,3 +20,10 @@ func (b BidderRepoImpl) Create(req entities.Bidders) (entities.Bidders, error) {
 
 	return req, err
 }
+
+func (BidderRepoImpl) GetAll() ([]entities.Bidders, error) {
+	var bidders []entities.Bidders
+	err := database.Db.Find(&bidders).Error
+
+	return bidders, err
+}

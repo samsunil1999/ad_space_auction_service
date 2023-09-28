@@ -29,7 +29,15 @@ func (b BidderImplementations) RegisterBidder(req models.BidderReq) (entities.Bi
 }
 
 func (b BidderImplementations) GetAllBidders() (models.ListAllBiddersResp, error) {
-	return models.ListAllBiddersResp{}, nil
+	bidders, err := repositories.BidderRepo.GetAll()
+	if err != nil {
+		return models.ListAllBiddersResp{}, err
+	}
+	return models.ListAllBiddersResp{
+		Count: len(bidders),
+		Data:  bidders,
+	}, nil
+
 }
 
 func (b BidderImplementations) GetBidderById(id string) (entities.Bidders, error) {
