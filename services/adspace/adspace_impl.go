@@ -2,6 +2,7 @@ package adspace
 
 import (
 	"PERSONAL/ad_space_auction_service/constants"
+	"PERSONAL/ad_space_auction_service/database"
 	"PERSONAL/ad_space_auction_service/models"
 	"PERSONAL/ad_space_auction_service/models/entities"
 	"PERSONAL/ad_space_auction_service/providers/repositories"
@@ -13,6 +14,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type AdspaceImplementations struct{}
@@ -103,7 +105,27 @@ func (a AdspaceImplementations) UpdateAdspaceById(id string, req models.AdspaceR
 }
 
 func (a AdspaceImplementations) DeleteAdspaceById(id string) (models.DeleteAdspaceResp, error) {
-	err := repositories.AdspaceRepo.DeleteById(id)
+	bids, err := repositories.BidRepo.GetAllByAdspaceId(id)
+	if err != nil {
+		return models.DeleteAdspaceResp{}, err
+	}
+
+	err = database.Db.Transaction(func(tx *gorm.DB) error {
+		// delete bids if available
+		if len(bids) > 0 {
+			err := repositories.BidRepo.DeleteAllByAdspaceId(id)
+			if err != nil {
+				return err
+			}
+		}
+
+		err := repositories.AdspaceRepo.DeleteById(id)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
 	if err != nil {
 		return models.DeleteAdspaceResp{}, err
 	}
