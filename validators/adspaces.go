@@ -99,32 +99,16 @@ func ValidateUpdateAdspaceByIdReq(ctx *gin.Context) (req models.AdspaceReq, id s
 		}
 	}
 
-	var auctionEndTime time.Time
 	if req.AuctionEndTime != "" {
-		auctionEndTime, err := time.Parse(constants.Time_Format_DD_MM_YYYY_WITH_COLON_HH_MM_SS, req.AuctionEndTime)
-		if err != nil {
-			return models.AdspaceReq{}, "", errors.New("invalid auction_end_time, must be in format dd-mm-yyyy hh:mm:ss")
-		}
-
-		if auctionEndTime.Before(time.Now()) {
-			return models.AdspaceReq{}, "", errors.New("auction end time cannot be a future time")
-		}
-
+		return models.AdspaceReq{}, "", errors.New("auction_end_time cannot be updated")
 	}
 
 	if req.ExpiredAt != "" {
-		expiredAt, err := time.Parse(constants.Time_Format_DD_MM_YYYY_WITH_COLON_HH_MM_SS, req.ExpiredAt)
-		if err != nil {
-			return models.AdspaceReq{}, "", errors.New("invalid  expired_at, must be in format dd-mm-yyyy hh:mm:ss")
-		}
-
-		if expiredAt.Before(auctionEndTime) {
-			return models.AdspaceReq{}, "", errors.New("expired_at cannot be less before auction_end_time")
-		}
+		return models.AdspaceReq{}, "", errors.New("expired_at cannot be less before auction_end_time")
 	}
 
-	if req.BasePrice < 0.0 {
-		return models.AdspaceReq{}, "", errors.New("Base price cannot be negative")
+	if req.BasePrice < 0.1 {
+		return models.AdspaceReq{}, "", errors.New("Base price cannot be less than 0.1")
 	}
 
 	return req, id, nil

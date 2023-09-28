@@ -85,7 +85,7 @@ func (a AdspaceImplementations) UpdateAdspaceById(id string, req models.AdspaceR
 	}
 
 	if len(bids) > 0 && req.BasePrice != 0.0 {
-		return entities.AdSpaces{}, errors.New("Cannot update base_price with active bids")
+		return entities.AdSpaces{}, errors.New("Cannot update base_price of adspace with active bids")
 	}
 
 	values := make(map[string]interface{})
