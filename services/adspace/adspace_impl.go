@@ -5,6 +5,7 @@ import (
 	"PERSONAL/ad_space_auction_service/models"
 	"PERSONAL/ad_space_auction_service/models/entities"
 	"PERSONAL/ad_space_auction_service/providers/repositories"
+	"log"
 
 	"fmt"
 	"strconv"
@@ -21,7 +22,7 @@ func (a AdspaceImplementations) CreateAdspace(req models.AdspaceReq) (entities.A
 	auctionEndTime, _ := time.Parse(constants.Time_Format_DD_MM_YYYY_WITH_COLON_HH_MM_SS, req.AuctionEndTime)
 	expiredAt, _ := time.Parse(constants.Time_Format_DD_MM_YYYY_WITH_COLON_HH_MM_SS, req.ExpiredAt)
 
-	return repositories.AdspaceRepo.Create(entities.AdSpaces{
+	adspace, err := repositories.AdspaceRepo.Create(entities.AdSpaces{
 		Uuid:           "ads_" + uuid.NewString()[:23],
 		Name:           req.Name,
 		Description:    req.Description,
@@ -32,7 +33,27 @@ func (a AdspaceImplementations) CreateAdspace(req models.AdspaceReq) (entities.A
 		CreatedAt:      time.Now(),
 		UpdatedAt:      time.Now(),
 	})
+	if err != nil {
+		return entities.AdSpaces{}, err
+	}
 
+	// schedule a go routine to update adspace with bidder details
+	go func() {
+		auctionEndDuration := time.Since(auctionEndTime)
+
+		time.AfterFunc(auctionEndDuration, func() {
+			adspaceAfterAuctionEnd(adspace.Uuid)
+		})
+	}()
+
+	//  schedule a go routine to delete adspace after expiry
+	go func() {
+		expiredAtDuration := time.Since(expiredAt)
+		time.AfterFunc(expiredAtDuration, func() {
+			adspaceAfterExpiredAt(adspace.Uuid)
+		})
+	}()
+	return adspace, nil
 }
 
 func (a AdspaceImplementations) GetAllAvailableAdspace() (models.ListAllAdspaceResp, error) {
@@ -88,4 +109,61 @@ func (a AdspaceImplementations) DeleteAdspaceById(id string) (models.DeleteAdspa
 	return models.DeleteAdspaceResp{
 		Message: "adspace with id " + id + " deleted successfully",
 	}, nil
+}
+
+func adspaceAfterExpiredAt(id string) {
+	// delete adspace
+	err := repositories.AdspaceRepo.DeleteById(id)
+	if err != nil {
+		log.Println("[adspaceAfterExpiredAt][AdspaceRepo][DeleteById] failed::", id, "::error::", err.Error())
+		return
+	}
+}
+
+func adspaceAfterAuctionEnd(id string) {
+	// fetch from adspace
+	adspace, err := repositories.AdspaceRepo.GetById(id)
+	if err != nil {
+		log.Println("[adspaceAfterAuctionEnd][AdspaceRepo][GetById] failed::", adspace.Uuid, "::error::", err.Error())
+		return
+	}
+
+	// fetch from bidders for highest bid
+	bids, err := repositories.BidRepo.GetAllByAdspaceId(adspace.Uuid)
+	if err != nil {
+		log.Println("[adspaceAfterAuctionEnd][BidRepo][GetAllByAdspaceId] failed::", adspace.Uuid, "::error::", err.Error())
+		return
+	}
+
+	// if there is no bids then update the status to 'expired'
+	if len(bids) == 0 {
+		log.Println("[adspaceAfterAuctionEnd] no bids found for adspace::", adspace.Uuid)
+
+		_, err = repositories.AdspaceRepo.UpdateWithCondition(adspace.Uuid, map[string]interface{}{"status": constants.Adspace_Status_EXPIRED})
+		if err != nil {
+			log.Println("[adspaceAfterAuctionEnd][AdspaceRepo][UpdateWithCondition] failed::", adspace.Uuid, "::error::", err.Error())
+		}
+		return
+	}
+
+	// find the max bid
+	maxBidAmount := adspace.BasePrice
+	maxBidderId := ""
+	for _, bid := range bids {
+		if maxBidAmount < bid.BidAmount {
+			maxBidAmount = bid.BidAmount
+			maxBidderId = bid.BidderId
+		}
+	}
+
+	// Update adspace with status 'live' and max bidder details
+	_, err = repositories.AdspaceRepo.UpdateWithCondition(adspace.Uuid, map[string]interface{}{
+		"status":     constants.Adspce_Status_LIVE,
+		"sold_price": maxBidAmount,
+		"bidder_id":  maxBidderId,
+	})
+	if err != nil {
+		log.Println("[adspaceAfterAuctionEnd][AdspaceRepo][UpdateWithCondition] failed::", adspace.Uuid, "::error::", err.Error())
+		return
+	}
 }
