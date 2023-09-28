@@ -54,3 +54,15 @@ func (a AdspaceRepoImpl) DeleteById(id string) (err error) {
 	err = database.Db.Where("uuid = ?", id).Delete(&entities.AdSpaces{}).Error
 	return err
 }
+
+func (a AdspaceRepoImpl) GetAllWithStatus(status string) ([]entities.AdSpaces, error) {
+	var records []entities.AdSpaces
+
+	err := database.Db.Where("status = ?", status).
+		Find(&records).Error
+	if err != nil {
+		return []entities.AdSpaces{}, err
+	}
+
+	return records, nil
+}

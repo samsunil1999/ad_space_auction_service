@@ -16,3 +16,10 @@ func (b BidRepoImpl) GetAllByAdspaceId(id string) (bids []entities.Bids, err err
 
 	return bids, nil
 }
+
+func (b BidRepoImpl) DeleteAllByAdspaceId(id string) error {
+	err := database.Db.Where("ad_space_id = ?", id).
+		Delete(&entities.Bids{}).Error
+
+	return err
+}

@@ -8,4 +8,5 @@ type AdspaceRepoInterface interface {
 	GetById(id string) (entities.AdSpaces, error)
 	UpdateWithCondition(id string, values map[string]interface{}) (entities.AdSpaces, error)
 	DeleteById(id string) error
+	GetAllWithStatus(status string) ([]entities.AdSpaces, error)
 }

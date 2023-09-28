@@ -3,6 +3,7 @@ package main
 import (
 	"PERSONAL/ad_space_auction_service/configs"
 	"PERSONAL/ad_space_auction_service/controllers/adspaces"
+	"PERSONAL/ad_space_auction_service/controllers/auctions"
 	"PERSONAL/ad_space_auction_service/database"
 	"log"
 
@@ -33,9 +34,9 @@ func mapUrl() {
 	router.DELETE("/bidders/{id}") // delete bidder
 
 	// auction endpoints
-	router.GET("/auctions")                    // list all live auctions
-	router.GET("/auctions/adspaces/{id}")      // Retrieve details of a specific auction, including the winning bid if the auction has ended & active bids if the auction is live
-	router.POST("/auctions/adspaces/{id}/bid") // Allow bidders to submit bids for an ongoing auction.
+	router.GET("/auctions", auctions.GetAllLiveAuctions) // list all live auctions
+	router.GET("/auctions/adspaces/{id}")                // Retrieve details of a specific auction, including the winning bid if the auction has ended & active bids if the auction is live
+	router.POST("/auctions/adspaces/{id}/bid")           // Allow bidders to submit bids for an ongoing auction.
 }
 
 func main() {
