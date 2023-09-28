@@ -23,3 +23,12 @@ func (b BidRepoImpl) DeleteAllByAdspaceId(id string) error {
 
 	return err
 }
+
+func (b BidRepoImpl) Create(bid entities.Bids) (entities.Bids, error) {
+	err := database.Db.Create(&bid).Error
+	if err != nil {
+		return entities.Bids{}, err
+	}
+
+	return bid, nil
+}

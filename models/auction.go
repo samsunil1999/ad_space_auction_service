@@ -24,11 +24,7 @@ type ListAuctionResp struct {
 }
 
 type BidOnAuctionReq struct {
-	AdspaceId string `json:"adspace_id"`
-	BidderId  string `json:"bidder_id"`
-	Amount    string `json:"amount"`
-}
-
-type BidOnAuctionResp struct {
-	Message string `json:"message"`
+	AdspaceId string  `json:"adspace_id"`
+	BidderId  string  `json:"bidder_id"`
+	Amount    float32 `json:"amount"`
 }

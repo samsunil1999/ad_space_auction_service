@@ -6,6 +6,10 @@ import (
 	"PERSONAL/ad_space_auction_service/models/entities"
 	"PERSONAL/ad_space_auction_service/providers/repositories"
 	"errors"
+	"fmt"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 type AuctionImplementation struct{}
@@ -52,6 +56,34 @@ func (a AuctionImplementation) GetAuctionById(id string) (models.AuctionResp, er
 	}, nil
 }
 
-func (a AuctionImplementation) NewBidOnAuction(req models.BidOnAuctionReq) (models.BidOnAuctionResp, error) {
-	return models.BidOnAuctionResp{}, nil
+func (a AuctionImplementation) NewBidOnAuction(req models.BidOnAuctionReq) (entities.Bids, error) {
+
+	adspace, err := repositories.AdspaceRepo.GetById(req.AdspaceId)
+	if err != nil {
+		return entities.Bids{}, err
+	}
+
+	if req.Amount < adspace.BasePrice {
+		return entities.Bids{}, errors.New("amount is less than base_price " + fmt.Sprintf("%2f", adspace.BasePrice))
+	}
+
+	// check if the bidder id exists
+	_, err = repositories.BidderRepo.GetById(req.BidderId)
+	if err != nil {
+		return entities.Bids{}, err
+	}
+
+	bid, err := repositories.BidRepo.Create(entities.Bids{
+		Uuid:      "bid_" + uuid.NewString()[:23],
+		AdSpaceId: req.AdspaceId,
+		BidderId:  req.BidderId,
+		BidAmount: req.Amount,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	})
+	if err != nil {
+		return entities.Bids{}, err
+	}
+
+	return bid, nil
 }
