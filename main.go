@@ -4,6 +4,7 @@ import (
 	"PERSONAL/ad_space_auction_service/configs"
 	"PERSONAL/ad_space_auction_service/controllers/adspaces"
 	"PERSONAL/ad_space_auction_service/controllers/auctions"
+	"PERSONAL/ad_space_auction_service/controllers/bidders"
 	"PERSONAL/ad_space_auction_service/database"
 	"log"
 
@@ -27,11 +28,11 @@ func mapUrl() {
 	router.DELETE("/adspaces/:id", adspaces.DeleteAdspace)     // delete adspace
 
 	// bidder endpoints
-	router.GET("/bidders")         // list all bidders
-	router.GET("/bidders/{id}")    // get bidder by id
-	router.POST("/bidders")        // register new bidder
-	router.PUT("/bidders/{id}")    // update bidder details
-	router.DELETE("/bidders/{id}") // delete bidder
+	router.GET("/bidders", bidders.RegisterBidder) // list all bidders
+	router.GET("/bidders/{id}")                    // get bidder by id
+	router.POST("/bidders")                        // register new bidder
+	router.PUT("/bidders/{id}")                    // update bidder details
+	router.DELETE("/bidders/{id}")                 // delete bidder
 
 	// auction endpoints
 	router.GET("/auctions/list-all", auctions.GetAllLiveAuctions)        // list all live auctions

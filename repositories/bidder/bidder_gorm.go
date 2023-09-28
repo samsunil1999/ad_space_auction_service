@@ -14,3 +14,9 @@ func (b BidderRepoImpl) GetById(id string) (entities.Bidders, error) {
 
 	return record, err
 }
+
+func (b BidderRepoImpl) Create(req entities.Bidders) (entities.Bidders, error) {
+	err := database.Db.Create(&req).Error
+
+	return req, err
+}
