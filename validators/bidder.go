@@ -38,3 +38,12 @@ func getRulesForRegisterBidderReq() govalidator.MapData {
 	}
 	return rules
 }
+
+func ValidateBidderId(c *gin.Context) (string, error) {
+	id := c.Param("id")
+	if id[:4] != "bdr_" {
+		return id, errors.New("invalid id " + id)
+	}
+
+	return id, nil
+}

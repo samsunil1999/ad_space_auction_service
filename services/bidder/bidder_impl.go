@@ -14,7 +14,7 @@ type BidderImplementations struct{}
 func (b BidderImplementations) RegisterBidder(req models.BidderReq) (entities.Bidders, error) {
 
 	bidder, err := repositories.BidderRepo.Create(entities.Bidders{
-		Uuid:        "bid_" + uuid.NewString()[:23],
+		Uuid:        "bdr_" + uuid.NewString()[:23],
 		Name:        req.Name,
 		Email:       req.Email,
 		PhoneNumber: req.PhoneNumber,
@@ -33,7 +33,8 @@ func (b BidderImplementations) GetAllBidders() (models.ListAllBiddersResp, error
 }
 
 func (b BidderImplementations) GetBidderById(id string) (entities.Bidders, error) {
-	return entities.Bidders{}, nil
+	bidder, err := repositories.BidderRepo.GetById(id)
+	return bidder, err
 }
 
 func (b BidderImplementations) UpdateBidderDetails(req models.BidderReq) (entities.Bidders, error) {

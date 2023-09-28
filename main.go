@@ -28,11 +28,11 @@ func mapUrl() {
 	router.DELETE("/adspaces/:id", adspaces.DeleteAdspace)     // delete adspace
 
 	// bidder endpoints
-	router.GET("/bidders", bidders.RegisterBidder) // list all bidders
-	router.GET("/bidders/{id}")                    // get bidder by id
-	router.POST("/bidders")                        // register new bidder
-	router.PUT("/bidders/{id}")                    // update bidder details
-	router.DELETE("/bidders/{id}")                 // delete bidder
+	router.GET("/bidders", bidders.RegisterBidder)    // list all bidders
+	router.GET("/bidders/:id", bidders.GetBidderById) // get bidder by id
+	router.POST("/bidders")                           // register new bidder
+	router.PUT("/bidders/{id}")                       // update bidder details
+	router.DELETE("/bidders/{id}")                    // delete bidder
 
 	// auction endpoints
 	router.GET("/auctions/list-all", auctions.GetAllLiveAuctions)        // list all live auctions
