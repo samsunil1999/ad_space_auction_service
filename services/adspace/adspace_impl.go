@@ -14,7 +14,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type AdspaceImplementations struct{}
@@ -43,7 +42,7 @@ func (a AdspaceImplementations) CreateAdspace(req models.AdspaceReq) (entities.A
 	// schedule a go routine to update adspace with bidder details
 	go func() {
 		auctionEndDuration := auctionEndTime.Sub(time.Now().Add((5 * time.Hour) + (30 * time.Minute)))
-		fmt.Println("RUNNING [adspaceAfterAuctionEnd] for uuid = ", adspace.Uuid, " after ", auctionEndDuration)
+		log.Println("RUNNING [adspaceAfterAuctionEnd] for uuid = ", adspace.Uuid, " after ", auctionEndDuration)
 		time.Sleep(auctionEndDuration)
 		adspaceAfterAuctionEnd(adspace.Uuid)
 	}()
@@ -51,7 +50,7 @@ func (a AdspaceImplementations) CreateAdspace(req models.AdspaceReq) (entities.A
 	//  schedule a go routine to delete adspace after expiry
 	go func() {
 		expiredAtDuration := expiredAt.Sub(time.Now().Add((5 * time.Hour) + (30 * time.Minute)))
-		fmt.Println("RUNNING [adspaceAfterExpiredAt] for uuid = ", adspace.Uuid, " after ", expiredAtDuration)
+		log.Println("RUNNING [adspaceAfterExpiredAt] for uuid = ", adspace.Uuid, " after ", expiredAtDuration)
 		time.Sleep(expiredAtDuration)
 		adspaceAfterExpiredAt(adspace.Uuid)
 	}()
@@ -109,24 +108,26 @@ func (a AdspaceImplementations) DeleteAdspaceById(id string) (models.DeleteAdspa
 		return models.DeleteAdspaceResp{}, err
 	}
 
-	err = database.Db.Transaction(func(tx *gorm.DB) error {
-		// delete bids if available
-		if len(bids) > 0 {
-			err := repositories.BidRepo.DeleteAllByAdspaceId(id)
-			if err != nil {
-				return err
-			}
-		}
+	tx := database.Db.Begin()
+	if tx.Error != nil {
+		return models.DeleteAdspaceResp{}, tx.Error
+	}
 
-		err := repositories.AdspaceRepo.DeleteById(id)
+	if len(bids) > 0 {
+		err := tx.Where("ad_space_id = ?", id).
+			Delete(&entities.Bids{}).Error
 		if err != nil {
-			return err
+			return models.DeleteAdspaceResp{}, err
 		}
+	}
 
-		return nil
-	})
+	err = tx.Where("uuid = ?", id).Delete(&entities.AdSpaces{}).Error
 	if err != nil {
 		return models.DeleteAdspaceResp{}, err
+	}
+
+	if database.Db = tx.Commit(); database.Db.Error != nil {
+		return models.DeleteAdspaceResp{}, database.Db.Error
 	}
 
 	return models.DeleteAdspaceResp{
