@@ -39,12 +39,12 @@ func ValiateCreateAdspaceReq(ctx *gin.Context) (req models.AdspaceReq, err error
 		return models.AdspaceReq{}, errors.New("invalid  expired_at, must be in format dd-mm-yyyy hh:mm:ss")
 	}
 
-	if auctionEndTime.Before(time.Now()) {
-		return models.AdspaceReq{}, errors.New("auction end time cannot be a future time")
+	if auctionEndTime.Before(time.Now().Add((5 * time.Hour) + (30 * time.Minute))) {
+		return models.AdspaceReq{}, errors.New("auction end time should be a future time")
 	}
 
 	if expiredAt.Before(auctionEndTime) {
-		return models.AdspaceReq{}, errors.New("expired_at cannot be less before auction_end_time")
+		return models.AdspaceReq{}, errors.New("expired_at cannot be less than auction_end_time")
 	}
 
 	if req.BasePrice < 0.0 {
