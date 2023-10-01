@@ -42,19 +42,18 @@ func (a AdspaceImplementations) CreateAdspace(req models.AdspaceReq) (entities.A
 
 	// schedule a go routine to update adspace with bidder details
 	go func() {
-		auctionEndDuration := time.Since(auctionEndTime)
-
-		time.AfterFunc(auctionEndDuration, func() {
-			adspaceAfterAuctionEnd(adspace.Uuid)
-		})
+		auctionEndDuration := auctionEndTime.Sub(time.Now().Add((5 * time.Hour) + (30 * time.Minute)))
+		fmt.Println("RUNNING [adspaceAfterAuctionEnd] for uuid = ", adspace.Uuid, " after ", auctionEndDuration)
+		time.Sleep(auctionEndDuration)
+		adspaceAfterAuctionEnd(adspace.Uuid)
 	}()
 
 	//  schedule a go routine to delete adspace after expiry
 	go func() {
-		expiredAtDuration := time.Since(expiredAt)
-		time.AfterFunc(expiredAtDuration, func() {
-			adspaceAfterExpiredAt(adspace.Uuid)
-		})
+		expiredAtDuration := expiredAt.Sub(time.Now().Add((5 * time.Hour) + (30 * time.Minute)))
+		fmt.Println("RUNNING [adspaceAfterExpiredAt] for uuid = ", adspace.Uuid, " after ", expiredAtDuration)
+		time.Sleep(expiredAtDuration)
+		adspaceAfterExpiredAt(adspace.Uuid)
 	}()
 	return adspace, nil
 }
@@ -142,6 +141,7 @@ func adspaceAfterExpiredAt(id string) {
 		log.Println("[adspaceAfterExpiredAt][AdspaceRepo][DeleteById] failed::", id, "::error::", err.Error())
 		return
 	}
+	log.Println("[adspaceAfterExpiredAt] Adspace ", id, " deleted on expiry successfuly")
 }
 
 func adspaceAfterAuctionEnd(id string) {
@@ -190,4 +190,6 @@ func adspaceAfterAuctionEnd(id string) {
 		log.Println("[adspaceAfterAuctionEnd][AdspaceRepo][UpdateWithCondition] failed::", adspace.Uuid, "::error::", err.Error())
 		return
 	}
+
+	log.Println("[adspaceAfterAuctionEnd] Adspace ", id, " auction time ended with max bidder_id ", maxBidderId)
 }

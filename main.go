@@ -32,12 +32,12 @@ func mapUrl() {
 	router.GET("/bidders/:id", bidders.GetBidderById)       // get bidder by id
 	router.POST("/bidders", bidders.RegisterBidder)         // register new bidder
 	router.PUT("/bidders/:id", bidders.UpdateBidderDetails) // update bidder details
-	router.DELETE("/bidders/{id}")                          // delete bidder
+	router.DELETE("/bidders/:id", bidders.DeRegisterBidder) // delete bidder
 
 	// auction endpoints
 	router.GET("/auctions/list-all", auctions.GetAllLiveAuctions)        // list all live auctions
 	router.GET("/auctions/adspaces/:id", auctions.GetAuctionByAdspaceId) // Retrieve details of a specific auction, including the winning bid if the auction has ended & active bids if the auction is live
-	router.POST("/auctions/adspaces/:id/bid", auctions.BidOnAuction)     // Allow bidders to submit bids for an ongoing auction.
+	router.POST("/auctions/bid", auctions.BidOnAuction)                  // Allow bidders to submit bids for an ongoing auction.
 }
 
 func main() {
