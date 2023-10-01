@@ -117,12 +117,14 @@ func (a AdspaceImplementations) DeleteAdspaceById(id string) (models.DeleteAdspa
 		err := tx.Where("ad_space_id = ?", id).
 			Delete(&entities.Bids{}).Error
 		if err != nil {
+			tx.Rollback()
 			return models.DeleteAdspaceResp{}, err
 		}
 	}
 
 	err = tx.Where("uuid = ?", id).Delete(&entities.AdSpaces{}).Error
 	if err != nil {
+		tx.Rollback()
 		return models.DeleteAdspaceResp{}, err
 	}
 
