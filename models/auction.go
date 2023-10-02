@@ -1,6 +1,6 @@
 package models
 
-import "PERSONAL/ad_space_auction_service/transformers"
+import "github.com/samsunil1999/ad_space_auction_service/transformers"
 
 type AuctionResp struct {
 	Adspace    transformers.Adspace `json:"adspace"`

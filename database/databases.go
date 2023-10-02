@@ -1,8 +1,8 @@
 package database
 
 import (
-	"PERSONAL/ad_space_auction_service/configs"
-	"PERSONAL/ad_space_auction_service/models/entities"
+	"github.com/samsunil1999/ad_space_auction_service/configs"
+	"github.com/samsunil1999/ad_space_auction_service/models/entities"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

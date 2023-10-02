@@ -1,8 +1,8 @@
 package adspace
 
 import (
-	"PERSONAL/ad_space_auction_service/models"
-	"PERSONAL/ad_space_auction_service/models/entities"
+	"github.com/samsunil1999/ad_space_auction_service/models"
+	"github.com/samsunil1999/ad_space_auction_service/models/entities"
 )
 
 type AdspaceInterface interface {

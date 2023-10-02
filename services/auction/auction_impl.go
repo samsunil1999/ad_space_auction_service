@@ -1,14 +1,15 @@
 package auction
 
 import (
-	"PERSONAL/ad_space_auction_service/constants"
-	"PERSONAL/ad_space_auction_service/models"
-	"PERSONAL/ad_space_auction_service/models/entities"
-	"PERSONAL/ad_space_auction_service/providers/repositories"
-	"PERSONAL/ad_space_auction_service/transformers"
 	"errors"
 	"fmt"
 	"time"
+
+	"github.com/samsunil1999/ad_space_auction_service/constants"
+	"github.com/samsunil1999/ad_space_auction_service/models"
+	"github.com/samsunil1999/ad_space_auction_service/models/entities"
+	"github.com/samsunil1999/ad_space_auction_service/providers/repositories"
+	"github.com/samsunil1999/ad_space_auction_service/transformers"
 
 	"github.com/google/uuid"
 )

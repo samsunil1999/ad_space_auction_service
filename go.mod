@@ -1,4 +1,4 @@
-module PERSONAL/ad_space_auction_service
+module github.com/samsunil1999/ad_space_auction_service
 
 go 1.20
 

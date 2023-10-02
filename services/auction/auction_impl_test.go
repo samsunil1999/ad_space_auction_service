@@ -1,13 +1,14 @@
 package auction
 
 import (
-	"PERSONAL/ad_space_auction_service/configs"
-	"PERSONAL/ad_space_auction_service/database"
-	"PERSONAL/ad_space_auction_service/models"
-	"PERSONAL/ad_space_auction_service/models/entities"
-	"PERSONAL/ad_space_auction_service/services/adspace"
-	"PERSONAL/ad_space_auction_service/services/bidder"
 	"testing"
+
+	"github.com/samsunil1999/ad_space_auction_service/configs"
+	"github.com/samsunil1999/ad_space_auction_service/database"
+	"github.com/samsunil1999/ad_space_auction_service/models"
+	"github.com/samsunil1999/ad_space_auction_service/models/entities"
+	"github.com/samsunil1999/ad_space_auction_service/services/adspace"
+	"github.com/samsunil1999/ad_space_auction_service/services/bidder"
 
 	"github.com/stretchr/testify/assert"
 )

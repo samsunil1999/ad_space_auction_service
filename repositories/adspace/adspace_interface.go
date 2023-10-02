@@ -1,6 +1,6 @@
 package adspace
 
-import "PERSONAL/ad_space_auction_service/models/entities"
+import "github.com/samsunil1999/ad_space_auction_service/models/entities"
 
 type AdspaceRepoInterface interface {
 	Create(req entities.AdSpaces) (entities.AdSpaces, error)

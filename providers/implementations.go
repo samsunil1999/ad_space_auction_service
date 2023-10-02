@@ -1,9 +1,9 @@
 package providers
 
 import (
-	"PERSONAL/ad_space_auction_service/services/adspace"
-	"PERSONAL/ad_space_auction_service/services/auction"
-	"PERSONAL/ad_space_auction_service/services/bidder"
+	"github.com/samsunil1999/ad_space_auction_service/services/adspace"
+	"github.com/samsunil1999/ad_space_auction_service/services/auction"
+	"github.com/samsunil1999/ad_space_auction_service/services/bidder"
 )
 
 var (

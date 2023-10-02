@@ -1,9 +1,9 @@
 package repositories
 
 import (
-	"PERSONAL/ad_space_auction_service/repositories/adspace"
-	"PERSONAL/ad_space_auction_service/repositories/bid"
-	"PERSONAL/ad_space_auction_service/repositories/bidder"
+	"github.com/samsunil1999/ad_space_auction_service/repositories/adspace"
+	"github.com/samsunil1999/ad_space_auction_service/repositories/bid"
+	"github.com/samsunil1999/ad_space_auction_service/repositories/bidder"
 )
 
 var (

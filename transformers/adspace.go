@@ -1,9 +1,10 @@
 package transformers
 
 import (
-	"PERSONAL/ad_space_auction_service/constants"
-	"PERSONAL/ad_space_auction_service/models/entities"
 	"time"
+
+	"github.com/samsunil1999/ad_space_auction_service/constants"
+	"github.com/samsunil1999/ad_space_auction_service/models/entities"
 )
 
 type Adspace struct {

@@ -1,10 +1,11 @@
 package bidders
 
 import (
-	"PERSONAL/ad_space_auction_service/controllers"
-	"PERSONAL/ad_space_auction_service/providers"
-	"PERSONAL/ad_space_auction_service/validators"
 	"net/http"
+
+	"github.com/samsunil1999/ad_space_auction_service/controllers"
+	"github.com/samsunil1999/ad_space_auction_service/providers"
+	"github.com/samsunil1999/ad_space_auction_service/validators"
 
 	"github.com/gin-gonic/gin"
 )

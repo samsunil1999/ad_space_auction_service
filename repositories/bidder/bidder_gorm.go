@@ -1,8 +1,8 @@
 package bidder
 
 import (
-	"PERSONAL/ad_space_auction_service/database"
-	"PERSONAL/ad_space_auction_service/models/entities"
+	"github.com/samsunil1999/ad_space_auction_service/database"
+	"github.com/samsunil1999/ad_space_auction_service/models/entities"
 )
 
 type BidderRepoImpl struct{}

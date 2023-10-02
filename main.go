@@ -1,12 +1,13 @@
 package main
 
 import (
-	"PERSONAL/ad_space_auction_service/configs"
-	"PERSONAL/ad_space_auction_service/controllers/adspaces"
-	"PERSONAL/ad_space_auction_service/controllers/auctions"
-	"PERSONAL/ad_space_auction_service/controllers/bidders"
-	"PERSONAL/ad_space_auction_service/database"
 	"log"
+
+	"github.com/samsunil1999/ad_space_auction_service/configs"
+	"github.com/samsunil1999/ad_space_auction_service/controllers/adspaces"
+	"github.com/samsunil1999/ad_space_auction_service/controllers/auctions"
+	"github.com/samsunil1999/ad_space_auction_service/controllers/bidders"
+	"github.com/samsunil1999/ad_space_auction_service/database"
 
 	"github.com/gin-gonic/gin"
 )

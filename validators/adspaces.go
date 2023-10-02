@@ -1,10 +1,11 @@
 package validators
 
 import (
-	"PERSONAL/ad_space_auction_service/constants"
-	"PERSONAL/ad_space_auction_service/models"
 	"errors"
 	"time"
+
+	"github.com/samsunil1999/ad_space_auction_service/constants"
+	"github.com/samsunil1999/ad_space_auction_service/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
