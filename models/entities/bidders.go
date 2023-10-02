@@ -1,6 +1,9 @@
 package entities
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 type Bidders struct {
 	ID          int64  `gorm:"column:bidder_id;primaryKey;auto_increment;not null"`
@@ -10,4 +13,5 @@ type Bidders struct {
 	PhoneNumber string `gorm:"phone_number;not null;type:varchar(10)"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+	DeletedAt   sql.NullTime
 }

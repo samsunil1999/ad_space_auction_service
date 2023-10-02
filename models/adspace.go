@@ -1,6 +1,8 @@
 package models
 
-import "PERSONAL/ad_space_auction_service/models/entities"
+import (
+	"PERSONAL/ad_space_auction_service/transformers"
+)
 
 type AdspaceReq struct {
 	Name           string  `json:"name"`
@@ -12,7 +14,7 @@ type AdspaceReq struct {
 
 type ListAllAdspaceResp struct {
 	Count int `json:"count"`
-	Data  []entities.AdSpaces
+	Data  []transformers.Adspace
 }
 
 type DeleteAdspaceResp struct {

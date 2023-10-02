@@ -1,6 +1,8 @@
 package models
 
-import "PERSONAL/ad_space_auction_service/models/entities"
+import (
+	"PERSONAL/ad_space_auction_service/transformers"
+)
 
 type BidderReq struct {
 	Name        string `json:"name"`
@@ -10,7 +12,7 @@ type BidderReq struct {
 
 type ListAllBiddersResp struct {
 	Count int `json:"count"`
-	Data  []entities.Bidders
+	Data  []transformers.Bidders
 }
 
 type DeleteBidderResp struct {

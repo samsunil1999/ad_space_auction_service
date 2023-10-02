@@ -107,8 +107,8 @@ func ValidateUpdateAdspaceByIdReq(ctx *gin.Context) (req models.AdspaceReq, id s
 		return models.AdspaceReq{}, "", errors.New("expired_at cannot be less before auction_end_time")
 	}
 
-	if req.BasePrice < 0.1 {
-		return models.AdspaceReq{}, "", errors.New("Base price cannot be less than 0.1")
+	if req.BasePrice < 0 {
+		return models.AdspaceReq{}, "", errors.New("Base price cannot be less than 0")
 	}
 
 	return req, id, nil

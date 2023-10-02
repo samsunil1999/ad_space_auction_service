@@ -6,6 +6,7 @@ import (
 	"PERSONAL/ad_space_auction_service/models"
 	"PERSONAL/ad_space_auction_service/models/entities"
 	"PERSONAL/ad_space_auction_service/providers/repositories"
+	"PERSONAL/ad_space_auction_service/transformers"
 	"time"
 
 	"github.com/google/uuid"
@@ -35,9 +36,14 @@ func (b BidderImplementations) GetAllBidders() (models.ListAllBiddersResp, error
 	if err != nil {
 		return models.ListAllBiddersResp{}, err
 	}
+
+	var bidderResp []transformers.Bidders
+	for _, bidder := range bidders {
+		bidderResp = append(bidderResp, transformers.GetBidderModel(bidder))
+	}
 	return models.ListAllBiddersResp{
 		Count: len(bidders),
-		Data:  bidders,
+		Data:  bidderResp,
 	}, nil
 
 }
@@ -68,15 +74,15 @@ func (b BidderImplementations) DeleteBidder(id string) (models.DeleteBidderResp,
 		return models.DeleteBidderResp{}, tx.Error
 	}
 	// Deleting all the bids made by bidder
-	err := tx.Where("bidder_id = ?", id).
-		Delete(&entities.Bids{}).Error
+	err := tx.Model(&entities.Bids{}).Where("bidder_id = ?", id).
+		Update("DeletedAt", time.Now()).Error
 	if err != nil {
 		tx.Rollback()
 		return models.DeleteBidderResp{}, err
 	}
 
-	// if there is an adspace with same bidder_id updat status to expired and remove bidder_id
-	err = tx.Where("bidder_id = ?", id).Updates(map[string]interface{}{
+	// if there is an adspace with same bidder_id update status to expired and remove bidder_id
+	err = tx.Model(&entities.AdSpaces{}).Where("bidder_id = ?", id).Updates(map[string]interface{}{
 		"status":    constants.Adspace_Status_EXPIRED,
 		"bidder_id": "",
 	}).Error
@@ -86,15 +92,17 @@ func (b BidderImplementations) DeleteBidder(id string) (models.DeleteBidderResp,
 	}
 
 	// Delete the bidder
-	err = tx.Where("uuid = ?", id).Delete(&entities.Bidders{}).Error
+	err = tx.Model(&entities.Bidders{}).Where("uuid = ?", id).Update("DeletedAt", time.Now()).Error
 	if err != nil {
 		tx.Rollback()
 		return models.DeleteBidderResp{}, err
 	}
 
-	if database.Db = tx.Commit(); database.Db.Error != nil {
-		return models.DeleteBidderResp{}, database.Db.Error
+	if err = tx.Commit().Error; err != nil {
+		return models.DeleteBidderResp{}, err
 	}
 
-	return models.DeleteBidderResp{}, nil
+	return models.DeleteBidderResp{
+		Message: "Bidder " + id + "deleted successfuly ",
+	}, nil
 }

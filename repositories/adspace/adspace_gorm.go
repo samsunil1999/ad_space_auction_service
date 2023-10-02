@@ -3,6 +3,7 @@ package adspace
 import (
 	"PERSONAL/ad_space_auction_service/database"
 	"PERSONAL/ad_space_auction_service/models/entities"
+	"time"
 )
 
 type AdspaceRepoImpl struct{}
@@ -29,7 +30,7 @@ func (a AdspaceRepoImpl) GetAll() ([]entities.AdSpaces, error) {
 
 func (a AdspaceRepoImpl) GetById(id string) (entities.AdSpaces, error) {
 	var record entities.AdSpaces
-	err := database.Db.Where("uuid = ?", id).
+	err := database.Db.Where("uuid = ? AND deleted_at IS NULL", id).
 		First(&record).Error
 	if err != nil {
 		return entities.AdSpaces{}, err
@@ -51,14 +52,14 @@ func (a AdspaceRepoImpl) UpdateWithCondition(id string, values map[string]interf
 }
 
 func (a AdspaceRepoImpl) DeleteById(id string) (err error) {
-	err = database.Db.Where("uuid = ?", id).Delete(&entities.AdSpaces{}).Error
+	err = database.Db.Model(&entities.AdSpaces{}).Where("uuid = ?", id).Update("DeletedAt", time.Now()).Error
 	return err
 }
 
 func (a AdspaceRepoImpl) GetAllWithStatus(status string) ([]entities.AdSpaces, error) {
 	var records []entities.AdSpaces
 
-	err := database.Db.Where("status = ?", status).
+	err := database.Db.Where("status = ? AND deleted_at IS NULL", status).
 		Find(&records).Error
 	if err != nil {
 		return []entities.AdSpaces{}, err

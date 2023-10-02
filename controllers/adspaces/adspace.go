@@ -3,6 +3,7 @@ package adspaces
 import (
 	"PERSONAL/ad_space_auction_service/controllers"
 	"PERSONAL/ad_space_auction_service/providers"
+	"PERSONAL/ad_space_auction_service/transformers"
 	"PERSONAL/ad_space_auction_service/validators"
 	"net/http"
 
@@ -28,7 +29,7 @@ func CreateAdspace(ctx *gin.Context) {
 		return
 	}
 
-	controllers.ReturnJsonStruct(ctx, http.StatusOK, resp)
+	controllers.ReturnJsonStruct(ctx, http.StatusOK, transformers.GetAdspaceModel(resp))
 }
 
 func ListAllAdspaces(ctx *gin.Context) {
@@ -64,7 +65,7 @@ func GetAdspaceById(ctx *gin.Context) {
 		return
 	}
 
-	controllers.ReturnJsonStruct(ctx, http.StatusOK, resp)
+	controllers.ReturnJsonStruct(ctx, http.StatusOK, transformers.GetAdspaceModel(resp))
 }
 
 func UpdateAdspaceById(ctx *gin.Context) {
@@ -86,7 +87,7 @@ func UpdateAdspaceById(ctx *gin.Context) {
 		return
 	}
 
-	controllers.ReturnJsonStruct(ctx, http.StatusOK, resp)
+	controllers.ReturnJsonStruct(ctx, http.StatusOK, transformers.GetAdspaceModel(resp))
 }
 
 func DeleteAdspace(ctx *gin.Context) {

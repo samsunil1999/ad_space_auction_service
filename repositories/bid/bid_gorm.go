@@ -8,27 +8,13 @@ import (
 type BidRepoImpl struct{}
 
 func (b BidRepoImpl) GetAllByAdspaceId(id string) (bids []entities.Bids, err error) {
-	err = database.Db.Where("ad_space_id = ?", id).
+	err = database.Db.Where("ad_space_id = ? AND deleted_at IS NULL", id).
 		Find(&bids).Error
 	if err != nil {
 		return []entities.Bids{}, err
 	}
 
 	return bids, nil
-}
-
-func (b BidRepoImpl) DeleteAllByAdspaceId(id string) error {
-	err := database.Db.Where("ad_space_id = ?", id).
-		Delete(&entities.Bids{}).Error
-
-	return err
-}
-
-func (b BidRepoImpl) DeleteAllByBidderId(id string) error {
-	err := database.Db.Where("bidder_id = ?", id).
-		Delete(&entities.Bids{}).Error
-
-	return err
 }
 
 func (b BidRepoImpl) Create(bid entities.Bids) (entities.Bids, error) {

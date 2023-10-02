@@ -5,6 +5,7 @@ import (
 	"PERSONAL/ad_space_auction_service/models"
 	"PERSONAL/ad_space_auction_service/models/entities"
 	"PERSONAL/ad_space_auction_service/providers/repositories"
+	"PERSONAL/ad_space_auction_service/transformers"
 	"errors"
 	"fmt"
 	"time"
@@ -23,7 +24,7 @@ func (a AuctionImplementation) GetAllLiveAuctions() (models.ListAuctionResp, err
 	var auctionData []models.AuctionResp
 	for _, adspace := range adspaces {
 		auctionData = append(auctionData, models.AuctionResp{
-			Adspace: adspace,
+			Adspace: transformers.GetAdspaceModel(adspace),
 		})
 	}
 
@@ -40,19 +41,22 @@ func (a AuctionImplementation) GetAuctionById(id string) (models.AuctionResp, er
 	}
 
 	// get all active bids if the adspace is in in_auction state
-	var bids []entities.Bids
+	var bidsResp []transformers.Bids
 	if adspace.Status == constants.Adspace_Status_IN_AUCTION {
-		bids, err = repositories.BidRepo.GetAllByAdspaceId(id)
+		bids, err := repositories.BidRepo.GetAllByAdspaceId(id)
 		if err != nil {
 			return models.AuctionResp{}, err
+		}
+		for _, bid := range bids {
+			bidsResp = append(bidsResp, transformers.GetBidsModel(bid))
 		}
 	} else {
 		return models.AuctionResp{}, errors.New("adspace " + id + " is not in auction")
 	}
 
 	return models.AuctionResp{
-		Adspace:    adspace,
-		ActiveBids: bids,
+		Adspace:    transformers.GetAdspaceModel(adspace),
+		ActiveBids: bidsResp,
 	}, nil
 }
 

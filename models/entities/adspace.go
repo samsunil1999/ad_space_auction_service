@@ -1,6 +1,7 @@
 package entities
 
 import (
+	"database/sql"
 	"time"
 )
 
@@ -12,9 +13,11 @@ type AdSpaces struct {
 	BasePrice      float32   `gorm:"column:base_price;not null;type:float"`
 	SoldPrice      float32   `gorm:"column:sold_price;default:null;type:float" json:"sold_price,omitempty"`
 	BidderId       string    `gorm:"column:bidder_id;default:null;type:varchar(28)" json:"bidder_id,omitempty"`
+	Bidder         Bidders   `gorm:"foreignKey:BidderId;references:Uuid"`
 	AuctionEndTime time.Time `gorm:"column:auction_end_time;default:null"`
 	ExpiredAt      time.Time `gorm:"column:expired_at;not null"`
 	Status         string    `gorm:"column:status;not null;type:varchar(25)"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
+	DeletedAt      sql.NullTime
 }

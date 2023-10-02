@@ -6,6 +6,7 @@ import (
 	"PERSONAL/ad_space_auction_service/models"
 	"PERSONAL/ad_space_auction_service/models/entities"
 	"PERSONAL/ad_space_auction_service/providers/repositories"
+	"PERSONAL/ad_space_auction_service/transformers"
 	"errors"
 	"log"
 
@@ -63,9 +64,14 @@ func (a AdspaceImplementations) GetAllAvailableAdspace() (models.ListAllAdspaceR
 		return models.ListAllAdspaceResp{}, err
 	}
 
+	var resp []transformers.Adspace
+	for _, adspace := range data {
+		resp = append(resp, transformers.GetAdspaceModel(adspace))
+	}
+
 	return models.ListAllAdspaceResp{
 		Count: len(data),
-		Data:  data,
+		Data:  resp,
 	}, nil
 }
 
@@ -114,22 +120,22 @@ func (a AdspaceImplementations) DeleteAdspaceById(id string) (models.DeleteAdspa
 	}
 
 	if len(bids) > 0 {
-		err := tx.Where("ad_space_id = ?", id).
-			Delete(&entities.Bids{}).Error
+		err := tx.Model(&entities.Bids{}).Where("ad_space_id = ?", id).
+			Update("DeletedAt", time.Now()).Error
 		if err != nil {
 			tx.Rollback()
 			return models.DeleteAdspaceResp{}, err
 		}
 	}
 
-	err = tx.Where("uuid = ?", id).Delete(&entities.AdSpaces{}).Error
+	err = tx.Model(&entities.AdSpaces{}).Where("uuid = ?", id).Update("DeletedAt", time.Now()).Error
 	if err != nil {
 		tx.Rollback()
 		return models.DeleteAdspaceResp{}, err
 	}
 
-	if database.Db = tx.Commit(); database.Db.Error != nil {
-		return models.DeleteAdspaceResp{}, database.Db.Error
+	if err = tx.Commit().Error; err != nil {
+		return models.DeleteAdspaceResp{}, err
 	}
 
 	return models.DeleteAdspaceResp{
