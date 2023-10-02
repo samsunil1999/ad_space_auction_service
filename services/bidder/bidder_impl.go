@@ -104,6 +104,6 @@ func (b BidderImplementations) DeleteBidder(id string) (models.DeleteBidderResp,
 	}
 
 	return models.DeleteBidderResp{
-		Message: "Bidder " + id + "deleted successfuly ",
+		Message: "Bidder " + id + " deleted successfully ",
 	}, nil
 }
